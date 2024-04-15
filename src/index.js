@@ -1,6 +1,6 @@
-const express=require('express')
-const mongoose=require('mongoose');
-const router=require('./route')
+import express from 'express'
+import mongoose from 'mongoose'
+import router from './route'
 require('dotenv').config()
 const app=express()
 app.use(express.json());

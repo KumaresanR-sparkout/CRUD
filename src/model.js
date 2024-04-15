@@ -1,4 +1,4 @@
-const mongoose=require('mongoose')
+import mongoose from 'mongoose'
 
 const user=new mongoose.Schema({
     name:{
@@ -16,4 +16,4 @@ const user=new mongoose.Schema({
         required:true
     }
 })
-module.exports=mongoose.model('users',user)
+export default mongoose.model('users',user)
