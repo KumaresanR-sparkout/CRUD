@@ -1,15 +1,18 @@
 import express from 'express'
 import mongoose from 'mongoose'
-import router from './route'
+import router from './routes/user-routes'
+
 require('dotenv').config()
-const app=express()
+const app = express()
 app.use(express.json());
-app.use(router)
-mongoose.connect(process.env.MONGOOSE).then((e)=>{
+
+mongoose.connect(process.env.MONGOOSE).then((db) => {
     console.log("Mongoose Db Connected")
-}).catch((e)=>console.log("Connection Error"))
+}).catch((error) => console.log("Connection Error"))
 
+app.use('/api/users', router)
 
-app.listen(process.env.PORT,()=>{
+app.listen(process.env.PORT, () => {
     console.log(`server started at port number ${process.env.PORT}`)
 })
+

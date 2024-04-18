@@ -1,12 +1,14 @@
 {
+
   "name": "curd",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build":"babel src -d es5",
-    "start": "npm run build && nodemon es5/index.js"
+    "build": "babel src -d lib",
+    "serve": "nodemon --exec babel-node src/index.js",
+    "start":"npm run build && nodemon lib/index.js"
   },
   "keywords": [],
   "author": "",
@@ -20,6 +22,7 @@
   "devDependencies": {
     "@babel/cli": "^7.24.1",
     "@babel/core": "^7.24.4",
+    "@babel/node": "^7.23.9",
     "@babel/preset-env": "^7.24.4"
   }
 }
