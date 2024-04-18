@@ -1,6 +1,6 @@
 import Users from '../models/user.model'
 
-export async function createUser(req, res) {
+export const createUser = async (req, res) => {
     try {
         const data = new Users(req.body)
         const userData = await Users.findOne({ email: req.body.email })
@@ -25,7 +25,7 @@ export async function createUser(req, res) {
     }
 }
 
-export async function getAllUsers(req, res) {
+export const getAllUsers = async (req, res) => {
     try {
         const getAllUsersData = await Users.find()
         console.log(getAllUsersData)
@@ -36,7 +36,7 @@ export async function getAllUsers(req, res) {
     }
 }
 
-export async function getUserById(req, res) {
+export const getUserById = async (req, res) => {
     try {
         const getUser = await Users.findById(req.params.id)
         console.log(getUser)
@@ -52,7 +52,7 @@ export async function getUserById(req, res) {
     }
 }
 
-export async function updateUserById(req, res) {
+export const updateUserById = async (req, res) => {
     try {
         const updateUser = await Users.findByIdAndUpdate(req.params.id, req.body, {
             new: true
@@ -61,7 +61,7 @@ export async function updateUserById(req, res) {
             res.status(404).send({ "message": "No user found to update" })
         }
         else {
-            res.status(201).send({"message":"User updated successfully","body": updateUser })
+            res.status(201).send({ "message": "User updated successfully", "body": updateUser })
         }
     }
     catch (error) {
@@ -69,7 +69,7 @@ export async function updateUserById(req, res) {
     }
 }
 
-export async function deleteUserById(req, res) {
+export const deleteUserById = async (req, res) => {
     try {
         const deleteUser = await Users.findByIdAndDelete(req.params.id)
         if (!deleteUser) {
