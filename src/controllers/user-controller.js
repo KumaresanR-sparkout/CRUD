@@ -1,18 +1,19 @@
 import Users from '../models/user.model'
-
+import { sendSuccessResponse } from './success-response-controller'
+import { sendErrorResponse } from './error-response-controller'
 export const createUser = async (req, res) => {
     try {
         const data = new Users(req.body)
         const userData = await Users.findOne({ email: req.body.email })
         if (userData) {
-            res.send("Data has been already present")
+            res.status(200).send(sendErrorResponse(200, "User data is already present"))
         }
         else {
             try {
                 const saveUser = await data.save();
                 if (saveUser) {
                     console.log("Data saved")
-                    res.status(201).send({ "message": "New user created", "body": saveUser })
+                    res.status(201).send(sendSuccessResponse(201, "User Created Successfully", saveUser))
                 }
             }
             catch (error) {
@@ -29,7 +30,13 @@ export const getAllUsers = async (req, res) => {
     try {
         const getAllUsersData = await Users.find()
         console.log(getAllUsersData)
-        res.status(200).send({ "body": getAllUsersData })
+        if (getAllUsersData[0]) {
+            res.status(200).send(sendSuccessResponse(200, "Data fetched Successfully", getAllUsersData))
+        }
+        else {
+            res.status(404).send(sendErrorResponse(404, "No users data found"))
+        }
+
     }
     catch (error) {
         res.status(500).send({ "error": error.message })
@@ -41,10 +48,10 @@ export const getUserById = async (req, res) => {
         const getUser = await Users.findById(req.params.id)
         console.log(getUser)
         if (getUser) {
-            res.status(200).send({ "body": getUser })
+            res.status(200).send(sendSuccessResponse(200, "Data fetched Successfully", getUser))
         }
         else {
-            res.status(404).send({ "message": "User Not Found" })
+            res.status(404).send(sendErrorResponse(404, "User not available"))
         }
     }
     catch (error) {
@@ -58,10 +65,10 @@ export const updateUserById = async (req, res) => {
             new: true
         })
         if (!updateUser) {
-            res.status(404).send({ "message": "No user found to update" })
+            res.status(404).send(sendErrorResponse(404, "No user found to update"))
         }
         else {
-            res.status(201).send({ "message": "User updated successfully", "body": updateUser })
+            res.status(201).send(sendSuccessResponse(201, "Data updated Successfully", updateUser))
         }
     }
     catch (error) {
@@ -73,10 +80,10 @@ export const deleteUserById = async (req, res) => {
     try {
         const deleteUser = await Users.findByIdAndDelete(req.params.id)
         if (!deleteUser) {
-            res.status(404).send({ "message": "No user found to delete" })
+            res.status(404).send(sendErrorResponse(404, "No user to delete"))
         }
         else {
-            res.status(200).send({ "message": "User deleted successfully" })
+            res.status(200).send(sendSuccessResponse(200, "Data deleted Successfully", deleteUser))
         }
     }
     catch (error) {
