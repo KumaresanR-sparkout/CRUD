@@ -1,61 +1,52 @@
 import Users from '../models/user.model'
-import { sendSuccessResponse } from './success-response-controller'
-import { sendErrorResponse } from './error-response-controller'
+import { sendSuccessResponse, sendErrorResponse } from '../response/responseHandler'
 export const createUser = async (req, res) => {
     try {
         const data = new Users(req.body)
         const userData = await Users.findOne({ email: req.body.email })
         if (userData) {
-            res.status(200).send(sendErrorResponse(200, "User data is already present"))
+            sendErrorResponse(res, 200, "User data is already present")
+            return
         }
-        else {
-            try {
-                const saveUser = await data.save();
-                if (saveUser) {
-                    console.log("Data saved")
-                    res.status(201).send(sendSuccessResponse(201, "User Created Successfully", saveUser))
-                }
-            }
-            catch (error) {
-                res.status(500).send({ "error": error.message })
-            }
-        }
+        const saveUser = await data.save();
+        sendSuccessResponse(res, 201, "User Created Successfully", saveUser)
+        return
     }
     catch (error) {
-        res.status(500).send({ "error": error.message })
+        sendErrorResponse(res, 500, error.message)
+        return
     }
 }
 
 export const getAllUsers = async (req, res) => {
     try {
         const getAllUsersData = await Users.find()
-        console.log(getAllUsersData)
         if (getAllUsersData[0]) {
-            res.status(200).send(sendSuccessResponse(200, "Data fetched Successfully", getAllUsersData))
+            sendSuccessResponse(res, 200, "Data fetched Successfully", getAllUsersData)
+            return
         }
-        else {
-            res.status(404).send(sendErrorResponse(404, "No users data found"))
-        }
-
+        sendErrorResponse(res, 404, "No users data found")
+        return
     }
     catch (error) {
-        res.status(500).send({ "error": error.message })
+        sendErrorResponse(res, 500, error.message)
+        return
     }
 }
 
 export const getUserById = async (req, res) => {
     try {
         const getUser = await Users.findById(req.params.id)
-        console.log(getUser)
         if (getUser) {
-            res.status(200).send(sendSuccessResponse(200, "Data fetched Successfully", getUser))
+            sendSuccessResponse(res, 200, "Data fetched Successfully By Id", getUser)
+            return
         }
-        else {
-            res.status(404).send(sendErrorResponse(404, "User not available"))
-        }
+        sendErrorResponse(res, 404, "User not available")
+        return
     }
     catch (error) {
-        res.status(500).send({ "error": error.message })
+        sendErrorResponse(res, 500, error.message)
+        return
     }
 }
 
@@ -65,14 +56,15 @@ export const updateUserById = async (req, res) => {
             new: true
         })
         if (!updateUser) {
-            res.status(404).send(sendErrorResponse(404, "No user found to update"))
+            sendErrorResponse(res, 404, "No user found to update")
+            return
         }
-        else {
-            res.status(201).send(sendSuccessResponse(201, "Data updated Successfully", updateUser))
-        }
+        sendSuccessResponse(res, 201, "Data updated Successfully", updateUser)
+        return
     }
     catch (error) {
-        res.status(500).send({ "error": error.message })
+        sendErrorResponse(res, 500, error.message)
+        return
     }
 }
 
@@ -80,13 +72,15 @@ export const deleteUserById = async (req, res) => {
     try {
         const deleteUser = await Users.findByIdAndDelete(req.params.id)
         if (!deleteUser) {
-            res.status(404).send(sendErrorResponse(404, "No user to delete"))
+            sendErrorResponse(res, 404, "No user to delete")
+            return
         }
-        else {
-            res.status(200).send(sendSuccessResponse(200, "Data deleted Successfully", deleteUser))
-        }
+        sendSuccessResponse(res, 200, "Data deleted Successfully", deleteUser)
+        return
+
     }
     catch (error) {
-        res.status(500).send({ "error": error.message })
+        sendErrorResponse(res, 500, error.message)
+        return
     }
 }
